@@ -78,6 +78,22 @@ class SoundcloudAPI:
             playlist = Playlist(obj=obj, client=self)
             playlist.clean_attributes()
             return playlist
+       
+    def search(self, query):
+        if not self.client_id:
+            self.get_credentials()
+        url = SoundcloudAPI.SEARCH_URL.format(
+            query = query,
+            client_id = self.client_id,
+            limit = 1,
+            offset = 0
+        )
+
+        obj = get_obj_from(url)['collection'][0]
+        if obj['kind'] == 'track':
+            return Track(obj = obj, client = self)
+        else:
+            return None
 
     def _format_get_tracks_urls(self, track_ids):
         urls = []
